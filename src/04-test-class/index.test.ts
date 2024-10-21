@@ -56,28 +56,29 @@ describe('BankAccount', () => {
   });
 
   test('fetchBalance should return a number when request is successful', async () => {
-    _.random = jest.fn().mockReturnValueOnce(75).mockReturnValueOnce(1); // Mock success case
+    //мокаем -- он блочит random который в оригинальном методе и верент 75 и 1
+    _.random = jest.fn().mockReturnValueOnce(75).mockReturnValueOnce(1); // Mock success case, для первого рандома в метоже  он вернет 75, для второго 1
     const account = getBankAccount(100);
     const balance = await account.fetchBalance();
     expect(balance).toBe(75); // Expecting the mocked value
   });
 
-  // test('should set new balance if fetchBalance returned a number', async () => {
-  //   (random as jest.Mock).mockReturnValueOnce(50).mockReturnValueOnce(1); // Mock success case
+  test('should set new balance if fetchBalance returned a number', async () => {
+    _.random = jest.fn().mockReturnValueOnce(50).mockReturnValueOnce(1);
 
-  //   const account = getBankAccount(100);
-  //   await account.synchronizeBalance();
+    const account = getBankAccount(100);
+    await account.synchronizeBalance();
 
-  //   expect(account.getBalance()).toBe(50); // Expecting the mocked value
-  // });
+    expect(account.getBalance()).toBe(50); // Expecting the mocked value
+  });
 
-  // test('should throw SynchronizationFailedError if fetchBalance returns null', async () => {
-  //   (random as jest.Mock).mockReturnValueOnce(50).mockReturnValueOnce(0); // Mock failure case
+  test('should throw SynchronizationFailedError if fetchBalance returns null', async () => {
+    _.random = jest.fn().mockReturnValueOnce(50).mockReturnValueOnce(0); // Mock failure case
 
-  //   const account = getBankAccount(100);
+    const account = getBankAccount(100);
 
-  //   await expect(account.synchronizeBalance()).rejects.toThrow(
-  //     SynchronizationFailedError,
-  //   );
-  // });
+    await expect(account.synchronizeBalance()).rejects.toThrow(
+      SynchronizationFailedError,
+    );
+  });
 });
